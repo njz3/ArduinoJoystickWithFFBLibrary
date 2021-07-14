@@ -1,5 +1,8 @@
 # Arduino Joystick With Force Feedback Library
 
+
+Fix DinamicHID for compile with Arduino DUE.
+
 ## Statement
 
 ### This is a joy library for Atmega32UX chip with force feedback, which can be used to make game handle with vibration, game steering wheel with force feedback, etc.Multi-axis-force-feedback feature is added.
@@ -14,7 +17,7 @@
 | params            | describe                                     |
 |:------------------|:---------------------------------------------|
 | REPORT_ID         | Hid report id                                |
-| JOYSTICK_TYPE     | Type of devece：JOYSTICK，GAMEPAD，MULTI_AXIS |
+| JOYSTICK_TYPE     | Type of device：JOYSTICK，GAMEPAD，MULTI_AXIS |
 | button count      | `[0-32]`                                     |
 | Hat Switch count  | `[0,1,2]`                                    |
 | X Axis enable     | True or False                                |
