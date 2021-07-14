@@ -17,7 +17,7 @@ Fix DinamicHID for compile with Arduino DUE.
 | params            | describe                                     |
 |:------------------|:---------------------------------------------|
 | REPORT_ID         | Hid report id                                |
-| JOYSTICK_TYPE     | Type of devece：JOYSTICK，GAMEPAD，MULTI_AXIS |
+| JOYSTICK_TYPE     | Type of device：JOYSTICK，GAMEPAD，MULTI_AXIS |
 | button count      | `[0-32]`                                     |
 | Hat Switch count  | `[0,1,2]`                                    |
 | X Axis enable     | True or False                                |

@@ -21,7 +21,7 @@
 #ifndef JOYSTICK_h
 #define JOYSTICK_h
 
-#include <DynamicHID/DynamicHID.h>
+#include "DynamicHID/DynamicHID.h"
 
 #if ARDUINO < 10606
 #error The Joystick library requires Arduino IDE 1.6.6 or greater. Please update your IDE.
@@ -55,20 +55,32 @@
 #define JOYSTICK_TYPE_GAMEPAD              0x05
 #define JOYSTICK_TYPE_MULTI_AXIS           0x08
 
-#define DIRECTION_ENABLE                   0x04
-#define X_AXIS_ENABLE                      0x01
-#define Y_AXIS_ENABLE                      0x02
-
 #ifndef FFB_AXIS_COUNT
 #define FFB_AXIS_COUNT                     0x02
 #endif
+
+#ifndef X_AXIS_ENABLE
+#define X_AXIS_ENABLE                      0x01
+#endif
+#ifndef Y_AXIS_ENABLE
+#define Y_AXIS_ENABLE                      0x02
+#endif
+#ifndef Z_AXIS_ENABLE
+#define Z_AXIS_ENABLE                      0x04
+#endif
+
+#ifndef DIRECTION_ENABLE
+#define DIRECTION_ENABLE				   (0x01 << FFB_AXIS_COUNT)
+#endif
+
 
 #define FORCE_FEEDBACK_MAXGAIN              100
 #ifndef DEG_TO_RAD
 #define DEG_TO_RAD              ((float)((float)3.14159265359 / 180.0))
 #endif
 
-struct Gains{
+#define default_gain 1.0
+#define gtotalGain default_gainstruct Gains{
     uint8_t totalGain         = FORCE_FEEDBACK_MAXGAIN;
 	uint8_t constantGain      = FORCE_FEEDBACK_MAXGAIN;
 	uint8_t rampGain          = FORCE_FEEDBACK_MAXGAIN;
@@ -159,7 +171,7 @@ private:
 	///force calculate funtion
 	float NormalizeRange(int32_t x, int32_t maxValue);
 	int32_t ApplyEnvelope(volatile TEffectState& effect, int32_t value);
-	int32_t ApplyGain(uint8_t value, uint8_t gain);
+    int32_t ApplyGain(uint16_t value, uint8_t gain);
 	int32_t ConstantForceCalculator(volatile TEffectState& effect);
 	int32_t RampForceCalculator(volatile TEffectState& effect);
 	int32_t SquareForceCalculator(volatile TEffectState& effect);
@@ -167,8 +179,9 @@ private:
 	int32_t TriangleForceCalculator(volatile TEffectState& effect);
 	int32_t SawtoothDownForceCalculator(volatile TEffectState& effect);
 	int32_t SawtoothUpForceCalculator(volatile TEffectState& effect);
-	int32_t ConditionForceCalculator(volatile TEffectState& effect, float metric, uint8_t axis);
+    int32_t ConditionForceCalculator(volatile TEffectState& effect, float metric, uint8_t conditionReport);
 	void forceCalculator(int32_t* forces);
+    float getAngleRatio(volatile TEffectState& effect, int axis);
 	int32_t getEffectForce(volatile TEffectState& effect, Gains _gains, EffectParams _effect_params, uint8_t axis);
 protected:
 	int buildAndSet16BitValue(bool includeValue, int16_t value, int16_t valueMinimum, int16_t valueMaximum, int16_t actualMinimum, int16_t actualMaximum, uint8_t dataLocation[]);
@@ -196,6 +209,8 @@ public:
 	void begin(bool initAutoSendState = true);
 	void end();
 	
+    void EnableAutoCenter(int16_t coefficient, int16_t saturation);
+    
 	// Set Range Functions
 	inline void setXAxisRange(int16_t minimum, int16_t maximum)
 	{
@@ -277,6 +292,7 @@ public:
 
 	//force feedback Interfaces
 	void getForce(int32_t* forces);
+    
 	//set gain functions
 	int8_t setGains(Gains* _gains){
 	    if(_gains != nullptr){
@@ -286,6 +302,7 @@ public:
 	    }
 	    return -1;
 	};
+    
 	//set effect params funtions
 	int8_t setEffectParams(EffectParams* _effect_params){
 	    if(_effect_params != nullptr){
